@@ -1,0 +1,45 @@
+/*eslint strict: [2, "function"]*/
+// Browserify will include this and other js files in a single file bundle.js
+$ = jQuery = require('jquery'); // Bootstrap expects jquery to be available globally.
+  
+var React = require('react');
+var Home = require('./components/homePage');
+var Authors = require('./components/authors/authorPage');
+var About = require('./components/about/aboutPage');
+var Header = require('./components/common/header');
+
+(function(win) {
+  "use strict";
+  var App = React.createClass({
+    render: function() {
+      var Child;
+      
+      switch(this.props.route) {
+	case 'about':
+          Child = About;
+          break;
+        case 'authors':
+          Child = Authors; 
+          break;
+        default:
+          Child = Home;
+      }
+   
+      return (
+	<div>
+          <Header/>
+          <Child />
+	</div>
+      );
+    }
+  });
+
+  function render() {
+    var route = win.location.hash.substr(1); // get rid of #
+    React.render(<App route={route} />, document.getElementById('app'));
+  }
+
+  win.addEventListener('hashchange', render);
+  render();
+  //React.render(<Home/>, document.getElementById('app'));
+})(window);
